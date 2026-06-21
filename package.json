@@ -43,7 +43,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://waliviqas.github.io/payment-tracking-app",
+  "homepage": ".",
   "devDependencies": {
     "gh-pages": "^6.3.0"
   }
