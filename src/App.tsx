@@ -13,6 +13,14 @@ function App() {
   const [expenses, setExpenses] = useLocalStorage<Expense[]>("expenses", []);
   const [categories, setCategories] = useLocalStorage<string[]>("categories", DEFAULT_CATEGORIES);
 
+  // Rename a category everywhere: the category list AND every expense using it.
+  const renameCategory = (oldName: string, newName: string) => {
+    const next = newName.trim();
+    if (!next || next === oldName || categories.includes(next)) return;
+    setCategories(categories.map((c) => (c === oldName ? next : c)));
+    setExpenses(expenses.map((x) => (x.category === oldName ? { ...x, category: next } : x)));
+  };
+
   return (
     <div className="app">
       <header className="topbar">SpendTracker</header>
@@ -34,7 +42,11 @@ function App() {
           <Expenses expenses={expenses} setExpenses={setExpenses} categories={categories} />
         )}
         {tab === "categories" && (
-          <Categories categories={categories} setCategories={setCategories} />
+          <Categories
+            categories={categories}
+            setCategories={setCategories}
+            renameCategory={renameCategory}
+          />
         )}
         {tab === "summary" && <Summary expenses={expenses} />}
       </main>
