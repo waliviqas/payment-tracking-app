@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/payment-tracking-app/static/css/main.82753e58.css",
+    "main.css": "/payment-tracking-app/static/css/main.4677bc54.css",
     "main.js": "/payment-tracking-app/static/js/main.81e39570.js",
     "static/js/453.1a396de4.chunk.js": "/payment-tracking-app/static/js/453.1a396de4.chunk.js",
     "index.html": "/payment-tracking-app/index.html",
-    "main.82753e58.css.map": "/payment-tracking-app/static/css/main.82753e58.css.map",
+    "main.4677bc54.css.map": "/payment-tracking-app/static/css/main.4677bc54.css.map",
     "main.81e39570.js.map": "/payment-tracking-app/static/js/main.81e39570.js.map",
     "453.1a396de4.chunk.js.map": "/payment-tracking-app/static/js/453.1a396de4.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.82753e58.css",
+    "static/css/main.4677bc54.css",
     "static/js/main.81e39570.js"
   ]
 }
