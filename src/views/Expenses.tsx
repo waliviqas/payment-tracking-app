@@ -1,0 +1,141 @@
+import React, { useState } from "react";
+import { Expense } from "../types";
+import { todayStr, uid } from "../storage";
+
+interface Props {
+  expenses: Expense[];
+  setExpenses: (e: Expense[]) => void;
+  categories: string[];
+}
+
+export default function Expenses({ expenses, setExpenses, categories }: Props) {
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState(categories[0] ?? "");
+  const [date, setDate] = useState(todayStr());
+  const [notes, setNotes] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [filter, setFilter] = useState("All");
+
+  const reset = () => {
+    setAmount("");
+    setNotes("");
+    setDate(todayStr());
+    setCategory(categories[0] ?? "");
+    setEditingId(null);
+  };
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const amt = parseFloat(amount);
+    if (isNaN(amt) || amt <= 0) return;
+
+    if (editingId) {
+      setExpenses(
+        expenses.map((x) =>
+          x.id === editingId ? { ...x, amount: amt, category, notes: notes.trim(), date } : x
+        )
+      );
+    } else {
+      setExpenses([
+        { id: uid(), amount: amt, category: category || "Other", notes: notes.trim(), date },
+        ...expenses,
+      ]);
+    }
+    reset();
+  };
+
+  const startEdit = (x: Expense) => {
+    setEditingId(x.id);
+    setAmount(String(x.amount));
+    setCategory(x.category);
+    setNotes(x.notes);
+    setDate(x.date);
+  };
+
+  const remove = (id: string) => {
+    setExpenses(expenses.filter((x) => x.id !== id));
+    if (editingId === id) reset();
+  };
+
+  const shown = expenses.filter((x) => filter === "All" || x.category === filter);
+
+  return (
+    <>
+      <form className="card" onSubmit={submit}>
+        <h2>{editingId ? "Edit Expense" : "Add Expense"}</h2>
+
+        <label className="lbl">Amount ($)</label>
+        <input
+          type="number"
+          step="0.01"
+          inputMode="decimal"
+          placeholder="0.00"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+
+        <label className="lbl">Category</label>
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          {categories.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+
+        <label className="lbl">Date</label>
+        <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+
+        <label className="lbl">Notes</label>
+        <input
+          type="text"
+          placeholder="What was this for?"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+        />
+
+        <button type="submit" className="primary block">{editingId ? "Save" : "Add"}</button>
+        {editingId && (
+          <button type="button" className="link" onClick={reset}>Cancel</button>
+        )}
+      </form>
+
+      <div className="filter">
+        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <option value="All">All Categories</option>
+          {categories.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+      </div>
+
+      {shown.length === 0 ? (
+        <p className="empty">No expenses yet. Add one above.</p>
+      ) : (
+        <div className="list">
+          {shown.map((x) => (
+            <div className="expense" key={x.id}>
+              <div className="expense-main">
+                <div className="expense-top">
+                  <span className="amt">${x.amount.toFixed(2)}</span>
+                  <span className="when">{toLabel(x.date)}</span>
+                </div>
+                <div className="cat">{x.category}</div>
+                {x.notes && <div className="notes">{x.notes}</div>}
+              </div>
+              <div className="expense-actions">
+                <button className="icon" onClick={() => startEdit(x)} aria-label="Edit">✎</button>
+                <button className="icon danger" onClick={() => remove(x.id)} aria-label="Delete">✕</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+function toLabel(dateStr: string): string {
+  return new Date(dateStr + "T00:00:00").toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
+}
