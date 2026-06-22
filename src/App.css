@@ -142,6 +142,29 @@ button {
 
 .filter select { background: var(--card-2); }
 
+.io-bar { display: flex; gap: 8px; }
+.io-btn {
+  flex: 1;
+  background: var(--card-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px;
+  font-weight: 600;
+}
+.io-text {
+  background: var(--input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 12px;
+  width: 100%;
+  min-height: 120px;
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+.io-msg { color: var(--muted); text-align: center; margin: 0; }
+
 .empty {
   color: var(--muted);
   text-align: center;
