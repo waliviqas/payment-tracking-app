@@ -34,7 +34,12 @@ export default async function handler(req, res) {
   // Use the user's actual categories if present, else the defaults.
   const cats = (await redis.get("categories")) || CATEGORIES;
 
-  const today = new Date().toISOString().slice(0, 10);
+  // "Today" in the user's local time (Eastern), with an optional override the
+  // Shortcut can pass so it's always correct even when traveling.
+  const bodyToday = ((req.body && req.body.today) || "").toString();
+  const today = /^\d{4}-\d{2}-\d{2}$/.test(bodyToday)
+    ? bodyToday
+    : new Date().toLocaleDateString("en-CA", { timeZone: "America/New_York" });
   const system = [
     "You convert a short spoken sentence about a purchase into JSON.",
     `Today is ${today}.`,
