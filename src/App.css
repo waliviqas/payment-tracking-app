@@ -305,19 +305,16 @@ button {
 .si-date { color: var(--muted); font-size: 0.8rem; }
 .si-notes { color: var(--muted); font-size: 0.85rem; }
 
-/* tappable expense row inside a summary category */
-.summary-item.tappable {
-  width: 100%;
-  background: var(--card-2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 12px;
-  color: inherit;
+/* just a pencil button at the end of each summary expense row */
+.si-edit-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1rem;
+  padding: 4px 6px;
   cursor: pointer;
-  text-align: left;
+  flex-shrink: 0;
 }
-.summary-item.tappable:active { background: #232327; }
-.si-edit { color: var(--muted); font-size: 0.9rem; }
 
 /* edit modal */
 .modal-backdrop {

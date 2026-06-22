@@ -110,14 +110,14 @@ export default function Summary({ expenses, setExpenses, categories }: Props) {
                 {isOpen && (
                   <div className="summary-items">
                     {items.map((x) => (
-                      <button className="summary-item tappable" key={x.id} onClick={() => setEditing(x)}>
+                      <div className="summary-item" key={x.id}>
                         <div className="si-left">
                           <span className="si-amt">${x.amount.toFixed(2)}</span>
                           <span className="si-date">{fmtDate(x.date)}</span>
                           {x.notes && <span className="si-notes">{x.notes}</span>}
                         </div>
-                        <span className="si-edit">✎</span>
-                      </button>
+                        <button className="si-edit-btn" onClick={() => setEditing(x)} aria-label="Edit expense">✎</button>
+                      </div>
                     ))}
                   </div>
                 )}
