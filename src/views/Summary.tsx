@@ -1,24 +1,27 @@
 import React, { useState } from "react";
 import { Expense } from "../types";
 import { Period, periodRange, shiftPeriod, periodLabel, inRange } from "../dates";
+import ExpenseEditor from "./ExpenseEditor";
 
 interface Props {
   expenses: Expense[];
+  setExpenses: (e: Expense[]) => void;
+  categories: string[];
 }
 
 const fmtDate = (d: string) =>
   new Date(d + "T00:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" });
 
-export default function Summary({ expenses }: Props) {
+export default function Summary({ expenses, setExpenses, categories }: Props) {
   const [period, setPeriod] = useState<Period>("month");
   const [ref, setRef] = useState<Date>(new Date());
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [editing, setEditing] = useState<Expense | null>(null);
 
   const { start, end } = periodRange(period, ref);
   const inPeriod = expenses.filter((x) => inRange(x.date, start, end));
   const total = inPeriod.reduce((s, x) => s + x.amount, 0);
 
-  // Per-category totals (descending), only categories with spend this period.
   const byCat = new Map<string, { total: number; count: number }>();
   for (const x of inPeriod) {
     const cur = byCat.get(x.category) || { total: 0, count: 0 };
@@ -38,6 +41,15 @@ export default function Summary({ expenses }: Props) {
   const moveAndReset = (dir: number) => {
     setRef(shiftPeriod(period, ref, dir));
     setExpanded(null);
+  };
+
+  const saveEdit = (updated: Expense) => {
+    setExpenses(expenses.map((x) => (x.id === updated.id ? updated : x)));
+    setEditing(null);
+  };
+  const deleteEdit = (id: string) => {
+    setExpenses(expenses.filter((x) => x.id !== id));
+    setEditing(null);
   };
 
   return (
@@ -71,9 +83,7 @@ export default function Summary({ expenses }: Props) {
         <div className="list">
           {rows.map((r) => {
             const isOpen = expanded === r.category;
-            const items = isOpen
-              ? inPeriod.filter((x) => x.category === r.category)
-              : [];
+            const items = isOpen ? inPeriod.filter((x) => x.category === r.category) : [];
             return (
               <div className="summary-row" key={r.category}>
                 <button
@@ -100,13 +110,14 @@ export default function Summary({ expenses }: Props) {
                 {isOpen && (
                   <div className="summary-items">
                     {items.map((x) => (
-                      <div className="summary-item" key={x.id}>
+                      <button className="summary-item tappable" key={x.id} onClick={() => setEditing(x)}>
                         <div className="si-left">
                           <span className="si-amt">${x.amount.toFixed(2)}</span>
                           <span className="si-date">{fmtDate(x.date)}</span>
+                          {x.notes && <span className="si-notes">{x.notes}</span>}
                         </div>
-                        {x.notes && <span className="si-notes">{x.notes}</span>}
-                      </div>
+                        <span className="si-edit">✎</span>
+                      </button>
                     ))}
                   </div>
                 )}
@@ -114,6 +125,16 @@ export default function Summary({ expenses }: Props) {
             );
           })}
         </div>
+      )}
+
+      {editing && (
+        <ExpenseEditor
+          expense={editing}
+          categories={categories}
+          onSave={saveEdit}
+          onDelete={deleteEdit}
+          onClose={() => setEditing(null)}
+        />
       )}
     </>
   );

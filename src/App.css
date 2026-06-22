@@ -300,7 +300,57 @@ button {
   justify-content: space-between;
   gap: 8px;
 }
-.si-left { display: flex; align-items: baseline; gap: 8px; }
+.si-left { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .si-amt { font-weight: 600; }
 .si-date { color: var(--muted); font-size: 0.8rem; }
-.si-notes { color: var(--muted); font-size: 0.85rem; text-align: right; }
+.si-notes { color: var(--muted); font-size: 0.85rem; }
+
+/* tappable expense row inside a summary category */
+.summary-item.tappable {
+  width: 100%;
+  background: var(--card-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.summary-item.tappable:active { background: #232327; }
+.si-edit { color: var(--muted); font-size: 0.9rem; }
+
+/* edit modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+}
+.modal {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 18px;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.modal h2 { margin: 0 0 6px; font-size: 1.05rem; }
+.modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+.del-text {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-weight: 600;
+  padding: 8px;
+}

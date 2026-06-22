@@ -150,7 +150,9 @@ function App() {
             renameCategory={renameCategory}
           />
         )}
-        {tab === "summary" && <Summary expenses={expenses} />}
+        {tab === "summary" && (
+          <Summary expenses={expenses} setExpenses={setExpenses} categories={categories} />
+        )}
       </main>
     </div>
   );
